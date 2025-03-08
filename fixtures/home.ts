@@ -1,7 +1,6 @@
 import { Page, Locator } from "@playwright/test";
 
 export class HomePage {
-  private page: Page;
   private openMenu: Locator;
   private closeMenu: Locator;
   private allItems: Locator;
@@ -12,8 +11,7 @@ export class HomePage {
   private productName: Locator;
   private inventoryItem: Locator;
 
-  constructor(page: Page) {
-    this.page = page;
+  constructor(private page: Page) {
     this.openMenu = this.page.getByRole("button", { name: "Open Menu" });
     this.closeMenu = this.page.getByRole("button", { name: "Close Menu" });
     this.allItems = this.page.getByRole("link", { name: "All items" });

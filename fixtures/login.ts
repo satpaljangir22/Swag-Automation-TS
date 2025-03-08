@@ -1,14 +1,12 @@
 import { Page, Locator } from "@playwright/test";
 
 export class LoginPage {
-  private page: Page;
   private username: Locator;
   private password: Locator;
   private loginBtn: Locator;
   private errorMsg: Locator;
 
-  constructor(page: Page) {
-    this.page = page;
+  constructor(private page: Page) {
     this.username = this.page.getByPlaceholder("Username");
     this.password = this.page.getByPlaceholder("Password");
     this.loginBtn = this.page.getByRole("button", {
