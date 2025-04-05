@@ -25,14 +25,16 @@ export class HomePage {
     this.inventoryItem = this.page.getByTestId("inventory-item");
   }
 
-  async getOptionsMenus(): Promise<(null | string)[]> {
+  async getOptionsMenus(): Promise<string[]> {
     await this.openMenu.click();
-    const allitems = await this.allItems.textContent();
-    const about = await this.about.textContent();
-    const logout = await this.logout.textContent();
-    const resetAppState = await this.resetAppState.textContent();
+    const menuItems = [
+      await this.allItems.textContent(),
+      await this.about.textContent(),
+      await this.logout.textContent(),
+      await this.resetAppState.textContent(),
+    ];
     await this.closeMenu.click();
-    return [allitems, about, logout, resetAppState];
+    return menuItems.filter((item) => item !== null);
   }
 
   async getProductPrice(productName: string): Promise<number> {
@@ -40,12 +42,17 @@ export class HomePage {
     const productPrice = await product
       .getByTestId("inventory-item-price")
       .textContent();
-    return productPrice != null ? parseInt(productPrice.replace("$", "")) : 0;
+    return productPrice != null ? parseFloat(productPrice.replace("$", "")) : 0;
   }
 
   async addProductToCart(productName: string): Promise<void> {
-    const product = this.inventoryItem.filter({ hasText: productName });
-    await product.getByRole("button", { name: "Add to cart" }).click();
+    try {
+      const product = this.inventoryItem.filter({ hasText: productName });
+      await product.getByRole("button", { name: "Add to cart" }).click();
+      console.log(`Product added to cart: ${productName}`);
+    } catch (error) {
+      console.error(`Error adding product to cart: ${productName}`, error);
+    }
   }
 
   async getCartCount(): Promise<number> {
@@ -54,14 +61,17 @@ export class HomePage {
   }
 
   async getAllProducts(): Promise<string[]> {
-    let productNames: string[] = [];
     const allProducts = await this.productName.all();
-    for (let product of allProducts) {
-      let productName: string | null = await product.textContent();
-      productName != null
-        ? productNames.push(productName)
-        : console.warn("product name is missing");
-    }
-    return productNames;
+    const productNames = await Promise.all(
+      allProducts.map(async (product) => {
+        const productName = await product.textContent();
+        if (!productName) {
+          console.warn("Product name is missing.");
+          return "";
+        }
+        return productName;
+      })
+    );
+    return productNames.filter((name) => name !== "");
   }
 }
