@@ -1,6 +1,5 @@
 import { test, expect } from "../fixtures/page-fixtures";
 import { users } from "../test-data/users";
-import { LoginPage } from "../fixtures/login";
 
 test.describe("Login Scenarios", () => {
   test.beforeEach(async ({ loginPage }) => {

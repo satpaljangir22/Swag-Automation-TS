@@ -42,9 +42,6 @@ test.describe("Home Page Validations", () => {
         maxProduct = product;
       }
     }
-    console.log(
-      `Most expensive product is "${maxProduct}" and it costs $${maxPrice}"`
-    );
     await homePage.addProductToCart(maxProduct);
     expect(await homePage.getCartCount()).toBe(1);
   });
